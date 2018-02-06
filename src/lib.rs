@@ -14,6 +14,7 @@
 //!   TLS Certificate validation had to be disabled, as there's currently no way to pass the right
 //!   hostname into the request library.
 //! * Uses a fixed IP for the `dns.google.com` server. This is not configurable at the moment.
+//! * Only handles A and AAAA records for now (IPv4 & IPv6, this implicitely handles CNAMES when they are resolved recursively)
 //!
 //! ## Example
 //!

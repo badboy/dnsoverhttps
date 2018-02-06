@@ -1,6 +1,7 @@
 [package]
 name = "dnsoverhttps"
 version = "0.1.0"
+description = "Resolve hostnames by sending DNS queries over HTTPS"
 authors = ["Jan-Erik Rediger <janerik@fnordig.de>"]
 
 readme = "README.md"

@@ -22,8 +22,11 @@ const DNS_HOSTNAME : &str = "dns.google.com";
 const DNS_QUERY_URL : &str = "https://172.217.21.110/experimental";
 
 pub fn resolve_host(host: &str) -> Result<Vec<IpAddr>, Error> {
+    let mut headers = reqwest::header::Headers::new();
+    headers.set(Host::new(DNS_HOSTNAME, None));
     let client = reqwest::Client::builder()
         .danger_disable_hostname_verification()
+        .default_headers(headers)
         .build()?;
 
     let mut ipv6 = resolve_host_family(&client, RecordType::AAAA, host)?;
@@ -48,7 +51,6 @@ fn resolve_host_family(client: &reqwest::Client, af: RecordType, name: &str) -> 
                                   ("ct", ""),
                                   ("body", &encoded)
                            ])
-                           .header(Host::new(DNS_HOSTNAME, None))
                            .send()?;
 
     let mut body = Vec::new();

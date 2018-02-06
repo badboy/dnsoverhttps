@@ -14,7 +14,7 @@ fn main() {
         Ok(a) => a,
         Err(err) => {
             eprintln!("An error occured");
-            eprintln!("{:?}", err);
+            eprintln!("{}", err);
             ::std::process::exit(2);
         }
     };

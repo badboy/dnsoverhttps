@@ -29,7 +29,7 @@ let addr = dnsoverhttps::resolve_host("example.com");
 `dnsoverhttps` comes with a small CLI utility providing `host` functionality to resolve hostnames:
 
 ```
-$ host
+$ host example.com
 example.com has address 2606:2800:220:1:248:1893:25c8:1946
 example.com has address 93.184.216.34
 ```

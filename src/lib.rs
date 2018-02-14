@@ -3,9 +3,7 @@
 //! Resolve hostnames by sending DNS queries over HTTPS.
 //! It uses `dns.google.com` to send the base64-encoded DNS query over HTTPS.
 //!
-//! Based on <https://tools.ietf.org/html/draft-ietf-doh-dns-over-https-02>.
-//!
-//! (A newer version of the draft is available, but the used server supports only version 2 for now)
+//! Based on <https://tools.ietf.org/html/draft-ietf-doh-dns-over-https-03>.
 //!
 //! ## Drawbacks
 //!
@@ -81,7 +79,7 @@ fn resolve_host_family(client: &reqwest::Client, af: RecordType, name: &str) -> 
     let mut resp = client.get(DNS_QUERY_URL)
                            .query(&[
                                   ("ct", ""),
-                                  ("body", &encoded)
+                                  ("dns", &encoded)
                            ])
                            .send()?;
 

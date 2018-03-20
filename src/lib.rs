@@ -1,7 +1,7 @@
 //! # dnsoverhttps - D'oh!
 //!
 //! Resolve hostnames by sending DNS queries over HTTPS.
-//! It uses `dns.google.com` to send the base64-encoded DNS query over HTTPS.
+//! It uses `dns.google.com` to send the DNS query over HTTPS.
 //!
 //! Based on <https://tools.ietf.org/html/draft-ietf-doh-dns-over-https-03>.
 //!
@@ -24,7 +24,6 @@
 
 extern crate trust_dns;
 extern crate trust_dns_proto;
-extern crate base64;
 extern crate reqwest;
 #[macro_use]
 extern crate failure;
@@ -32,8 +31,8 @@ extern crate failure;
 use std::str::FromStr;
 use std::net::IpAddr;
 
-use base64::encode;
-use reqwest::header::Host;
+use reqwest::header::{ContentType, Host};
+use reqwest::mime::Mime;
 
 use trust_dns::op::{Message, Query};
 use trust_dns::rr::{Name, RecordType};
@@ -74,14 +73,13 @@ fn resolve_host_family(client: &reqwest::Client, af: RecordType, name: &str) -> 
     msg.add_query(query);
 
     let qbuf = msg.to_vec()?;
-    let encoded = encode(&qbuf);
 
-    let mut resp = client.get(DNS_QUERY_URL)
-                           .query(&[
-                                  ("ct", ""),
-                                  ("dns", &encoded)
-                           ])
-                           .send()?;
+    let wireformat = Mime::from_str("application/dns-udpwireformat").unwrap();
+
+    let mut resp = client.post(DNS_QUERY_URL)
+        .header(ContentType(wireformat))
+        .body(qbuf)
+        .send()?;
 
     let mut body = Vec::new();
     resp.copy_to(&mut body)?;

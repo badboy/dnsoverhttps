@@ -18,7 +18,7 @@ fn main() {
     };
 
     let client = match args.next() {
-        Some(a) => Client::from_url(&a),
+        Some(a) => Client::from_url(&a).unwrap(),
         None => Client::default(),
     };
 

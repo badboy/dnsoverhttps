@@ -17,7 +17,7 @@ use error::Error;
 /// ## Example
 ///
 /// ```
-/// let client = dnsoverhttps::Client::from_url("https://dns.google.com/experimental");
+/// let client = dnsoverhttps::Client::from_url("https://dns.google.com/experimental").unwrap();
 /// let addr = client.resolve_host("example.com");
 /// ```
 pub struct Client {
@@ -29,21 +29,16 @@ impl Client {
     /// Create a new DoH client using the given query URL.
     /// The URL's host will be resolved using the system's resolver.
     /// The host will be queried using a `POST` request using the `application/dns-udpwireformat` content-type for the body.
-    ///
-    /// ## Panics
-    ///
-    /// This panics if the URL can't be parsed or if the native TLS backend cannot be created or initialized
-    pub fn from_url(url: &str) -> Client {
+    pub fn from_url(url: &str) -> Result<Client, Error> {
         trace!("New client with url '{}' (needs resolving)", url);
-        let url = Url::from_str(url).expect("Can't parse URL");
+        let url = Url::from_str(url)?;
 
-        let client = reqwest::Client::builder()
-            .build().unwrap();
+        let client = reqwest::Client::builder().build()?;
 
-        Client {
+        Ok(Client {
             url: url,
             client: client,
-        }
+        })
     }
 
     /// Create a new DoH client using the given query URL and host.
@@ -54,24 +49,21 @@ impl Client {
     /// ## Caution
     /// This will disable hostname verification of the TLS server certificate.
     /// The certificate is still checked for validity.
-    ///
-    /// ## Panics
-    /// This panics if the URL can't be parsed or if the native TLS backend cannot be created or initialized
-    pub fn from_url_with_hostname(url: &str, host: String) -> Client {
+    pub fn from_url_with_hostname(url: &str, host: String) -> Result<Client, Error> {
         trace!("New client with url '{}' and host '{}'", url, host);
-        let url = Url::from_str(url).expect("Can't parse URL");
+        let url = Url::from_str(url)?;
 
         let mut headers = reqwest::header::Headers::new();
         headers.set(header::Host::new(host, None));
         let client = reqwest::Client::builder()
             .danger_disable_hostname_verification()
             .default_headers(headers)
-            .build().unwrap();
+            .build()?;
 
-        Client {
+        Ok(Client {
             url: url,
             client: client,
-        }
+        })
     }
 
     /// Resolve the host specified by `host` as a list of `IpAddr`.
@@ -133,6 +125,6 @@ impl Default for Client {
         const DNS_HOSTNAME : &str = "dns.google.com";
         const DNS_QUERY_URL : &str = "https://172.217.21.110/experimental";
 
-        Client::from_url_with_hostname(DNS_QUERY_URL, DNS_HOSTNAME.to_string())
+        Client::from_url_with_hostname(DNS_QUERY_URL, DNS_HOSTNAME.to_string()).unwrap()
     }
 }

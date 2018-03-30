@@ -6,6 +6,8 @@ pub enum Error {
     #[fail(display = "Failed to parse DNS protocol")]
     DnsProtoError,
     #[fail(display = "{}", _0)]
+    Url(#[cause] reqwest::UrlError),
+    #[fail(display = "{}", _0)]
     Reqwest(#[cause] reqwest::Error),
 }
 
@@ -18,5 +20,11 @@ impl From<ProtoError> for Error {
 impl From<reqwest::Error> for Error {
     fn from(error: reqwest::Error) -> Error {
         Error::Reqwest(error)
+    }
+}
+
+impl From<reqwest::UrlError> for Error {
+    fn from(error: reqwest::UrlError) -> Error {
+        Error::Url(error)
     }
 }

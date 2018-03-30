@@ -20,7 +20,7 @@
 //! let addr = dnsoverhttps::resolve_host("example.com");
 //! ```
 
-//#![deny(missing_docs)]
+#![deny(missing_docs)]
 
 extern crate trust_dns;
 extern crate trust_dns_proto;
@@ -38,12 +38,18 @@ mod client;
 use error::Error;
 pub use client::Client;
 
-/// Resolve the host specified by `host` as a number of `IpAddr`.
+/// Resolve the host specified by `host` as a list of `IpAddr`.
 ///
-/// This method queries the server over HTTPS for both IPv4 and IPv6 addresses.
+/// This method queries the pre-defined default server over HTTPS for both IPv4 and IPv6 addresses.
 ///
-/// If the host cannot be found, the vector will be empty.
+/// If the host cannot be found, the list will be empty.
 /// If any errors are encountered during the resolving, the error is returned.
+///
+/// ## Example
+///
+/// ```
+/// let addr = dnsoverhttps::resolve_host("example.com");
+/// ```
 pub fn resolve_host(host: &str) -> Result<Vec<IpAddr>, Error> {
     Client::default().resolve_host(host)
 }

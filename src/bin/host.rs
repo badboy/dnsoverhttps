@@ -12,7 +12,7 @@ fn main() {
         None => {
             eprintln!("Usage: host hostname [DNS query url]");
             eprintln!();
-            eprintln!("The DNS query URL defaults to https://dns.google.com/experimental");
+            eprintln!("The DNS query URL defaults to https://1.1.1.1/dns-query");
             ::std::process::exit(2);
         }
     };

@@ -17,7 +17,7 @@ use error::Error;
 /// ## Example
 ///
 /// ```
-/// let client = dnsoverhttps::Client::from_url("https://dns.google.com/experimental").unwrap();
+/// let client = dnsoverhttps::Client::from_url("https://1.1.1.1/dns-query").unwrap();
 /// let addr = client.resolve_host("example.com");
 /// ```
 pub struct Client {
@@ -122,9 +122,8 @@ fn resolve_host_family(client: &reqwest::Client, url: Url, af: RecordType, name:
 
 impl Default for Client {
     fn default() -> Client {
-        const DNS_HOSTNAME : &str = "dns.google.com";
-        const DNS_QUERY_URL : &str = "https://172.217.21.110/experimental";
+        const DNS_QUERY_URL : &str = "https://1.1.1.1/dns-query";
 
-        Client::from_url_with_hostname(DNS_QUERY_URL, DNS_HOSTNAME.to_string()).unwrap()
+        Client::from_url(DNS_QUERY_URL).unwrap()
     }
 }

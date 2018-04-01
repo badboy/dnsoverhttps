@@ -3,23 +3,29 @@
 [![crates.io](http://meritbadge.herokuapp.com/dnsoverhttps)](https://crates.io/crates/dnsoverhttps)
 
 Resolve hostnames by sending DNS queries over HTTPS.
-It uses `dns.google.com` to send the base64-encoded DNS query over HTTPS.
+It uses `https://1.1.1.1` as the DNS resolver by default, hosted by Cloudflare.
+According to Cloudflare it is a privacy-first consumer DNS service.
+See <https://1.1.1.1> for more information.
 
 Based on <https://tools.ietf.org/html/draft-ietf-doh-dns-over-https-03>.
 
 ## Drawbacks
 
-* TLS Certificate is not checked.
-  The connection is done using a static IPv4 address for the server.
-  TLS Certificate validation had to be disabled, as there's currently no way to pass the right
-  hostname into the request library.
-* Uses a fixed IP for the `dns.google.com` server. This is not configurable at the moment.
+* When specifing a URL, the hostname has to be specified as well for use in HTTP.
+  The TLS Certificate received from the server is validated, but not checked for the correct hostname..
 * Only handles A and AAAA records for now (IPv4 & IPv6, this implicitely handles CNAMES when they are resolved recursively)
 
-## Example
+## Example: Default resolver
 
-```
+```rust
 let addr = dnsoverhttps::resolve_host("example.com");
+```
+
+## Example: Custom resolver
+
+```rust
+let client = dnsoverhttps::Client::from_url_with_hostname("https://172.217.21.110/experimental", "dns.google.com".to_string()).unwrap();
+let addr = client.resolve_host("example.com");
 ```
 
 ## CLI Usage

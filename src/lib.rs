@@ -5,7 +5,7 @@
 //! According to Cloudflare it is a privacy-first consumer DNS service.
 //! See <https://1.1.1.1> for more information.
 //!
-//! Based on <https://tools.ietf.org/html/draft-ietf-doh-dns-over-https-03>.
+//! Based on <https://tools.ietf.org/html/draft-ietf-doh-dns-over-https-07>.
 //!
 //! ## Drawbacks
 //!

@@ -2,7 +2,7 @@ use std::net::IpAddr;
 use std::str::FromStr;
 
 use reqwest::{self, header, Url};
-use reqwest::header::ContentType;
+use reqwest::header::{ContentType, Accept, qitem};
 use reqwest::mime::Mime;
 use trust_dns::op::{Message, Query};
 use trust_dns::rr::{Name, RecordType};
@@ -28,7 +28,7 @@ pub struct Client {
 impl Client {
     /// Create a new DoH client using the given query URL.
     /// The URL's host will be resolved using the system's resolver.
-    /// The host will be queried using a `POST` request using the `application/dns-udpwireformat` content-type for the body.
+    /// The host will be queried using a `POST` request using the `application/dns-message` content-type for the body.
     pub fn from_url(url: &str) -> Result<Client, Error> {
         trace!("New client with url '{}' (needs resolving)", url);
         let url = Url::from_str(url)?;
@@ -44,7 +44,7 @@ impl Client {
     /// Create a new DoH client using the given query URL and host.
     /// This should be used to bootstrap DoH resolving without the system's resolver. The URL can
     /// contain the host's IP and the hostname is used in the HTTP request.
-    /// The host will be queried using a `POST` request using the `application/dns-udpwireformat` content-type for the body.
+    /// The host will be queried using a `POST` request using the `application/dns-message` content-type for the body.
     ///
     /// ## Caution
     /// This will disable hostname verification of the TLS server certificate.
@@ -93,10 +93,11 @@ fn resolve_host_family(client: &reqwest::Client, url: Url, af: RecordType, name:
 
     let qbuf = msg.to_vec()?;
 
-    let wireformat = Mime::from_str("application/dns-udpwireformat").unwrap();
+    let wireformat = Mime::from_str("application/dns-message").unwrap();
 
     let mut resp = client.post(url)
-        .header(ContentType(wireformat))
+        .header(ContentType(wireformat.clone()))
+        .header(Accept(vec![qitem(wireformat)]))
         .body(qbuf)
         .send()?;
 

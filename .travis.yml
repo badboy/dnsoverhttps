@@ -1,0 +1,21 @@
+language: rust
+sudo: false
+
+env: RUST_BACKTRACE=1
+
+matrix:
+  include:
+    - rust: stable
+    - rust: beta
+    - rust: nightly
+    - rust: stable
+      env: "EXTRAARGS=--ignored"
+
+  allow_failures:
+    - env: "EXTRAARGS=--ignored"
+
+script:
+  - cargo test -- "$EXTRAARGS"
+
+notifications:
+  email: false

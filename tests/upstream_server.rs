@@ -57,6 +57,15 @@ fn cryptosx() {
 }
 
 #[test]
+fn mozilla_cloudflare() {
+    let c = Client::from_url("https://mozilla.cloudflare-dns.com/dns-query")
+        .expect("client should have been created from URL");
+    let addrs = c.resolve_host(DOMAIN).expect("hostname should be resolvable.");
+
+    assert_eq!(valid_ips(), addrs);
+}
+
+#[test]
 // Google doesn't support `application/dns-message` yet.
 #[ignore]
 fn google() {

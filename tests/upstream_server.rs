@@ -66,8 +66,6 @@ fn mozilla_cloudflare() {
 }
 
 #[test]
-// Google doesn't support `application/dns-message` yet.
-#[ignore]
 fn google() {
     let c = Client::from_url("https://dns.google.com/experimental")
         .expect("client should have been created from URL");

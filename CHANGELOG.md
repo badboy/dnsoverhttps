@@ -1,3 +1,7 @@
+# v0.6.0 (2018-09-21)
+
+* Update dependencies
+
 # v0.5.0 (2018-06-05)
 
 * Update to version 7 of the draft (updated content-type)

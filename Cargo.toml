@@ -21,9 +21,9 @@ include = [
 ]
 
 [dependencies]
-reqwest = "0.8.4"
-trust-dns = "0.13.0"
-trust-dns-proto = "0.2.0"
-failure = "0.1.1"
+reqwest = "0.9.1"
+trust-dns = "0.14.0"
+trust-dns-proto = "0.4.0"
+failure = "0.1.2"
 log = "0.4"
 env_logger = "0.5"

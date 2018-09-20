@@ -9,6 +9,8 @@ pub enum Error {
     Url(#[cause] reqwest::UrlError),
     #[fail(display = "{}", _0)]
     Reqwest(#[cause] reqwest::Error),
+    #[fail(display = "{}", _0)]
+    InvalidHeaderValue(#[cause] reqwest::header::InvalidHeaderValue),
 }
 
 impl From<ProtoError> for Error {
@@ -26,5 +28,11 @@ impl From<reqwest::Error> for Error {
 impl From<reqwest::UrlError> for Error {
     fn from(error: reqwest::UrlError) -> Error {
         Error::Url(error)
+    }
+}
+
+impl From<reqwest::header::InvalidHeaderValue> for Error {
+    fn from(error: reqwest::header::InvalidHeaderValue) -> Error {
+        Error::InvalidHeaderValue(error)
     }
 }

@@ -2,8 +2,6 @@ use std::net::IpAddr;
 use std::str::FromStr;
 
 use reqwest::{self, header, Url};
-use reqwest::header::{ContentType, Accept, qitem};
-use reqwest::mime::Mime;
 use trust_dns::op::{Message, Query};
 use trust_dns::rr::{Name, RecordType};
 use trust_dns::rr::RData::*;
@@ -53,10 +51,10 @@ impl Client {
         trace!("New client with url '{}' and host '{}'", url, host);
         let url = Url::from_str(url)?;
 
-        let mut headers = reqwest::header::Headers::new();
-        headers.set(header::Host::new(host, None));
+        let mut headers = header::HeaderMap::new();
+        headers.insert(header::HOST, header::HeaderValue::from_str(&host)?);
         let client = reqwest::Client::builder()
-            .danger_disable_hostname_verification()
+            .danger_accept_invalid_hostnames(true)
             .default_headers(headers)
             .build()?;
 
@@ -93,11 +91,11 @@ fn resolve_host_family(client: &reqwest::Client, url: Url, af: RecordType, name:
 
     let qbuf = msg.to_vec()?;
 
-    let wireformat = Mime::from_str("application/dns-message").unwrap();
+    let wireformat = "application/dns-message";
 
     let mut resp = client.post(url)
-        .header(ContentType(wireformat.clone()))
-        .header(Accept(vec![qitem(wireformat)]))
+        .header("content-type", wireformat)
+        .header("accept", wireformat)
         .body(qbuf)
         .send()?;
 
